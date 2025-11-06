@@ -2,494 +2,130 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Есту Көмекшісі</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .header h1 {
-            color: #667eea;
-            font-size: 24px;
-            margin-bottom: 10px;
-            animation: fadeInDown 0.8s ease;
-        }
-
-        .lang-switch {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .lang-btn {
-            padding: 10px 20px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .lang-btn.active {
-            background: #667eea;
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .container {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .control-panel {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            animation: fadeInUp 0.8s ease;
-        }
-
-        .mic-button {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 50px;
-            cursor: pointer;
-            margin: 0 auto;
-            display: block;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mic-button:active {
-            transform: scale(0.95);
-        }
-
-        .mic-button.listening {
-            animation: pulse 1.5s infinite;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .mic-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .mic-button:active::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .status {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        .transcript-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            flex: 1;
-            animation: fadeInUp 0.8s ease 0.2s both;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .transcript-title {
-            font-size: 20px;
-            color: #667eea;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .transcript {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            min-height: 200px;
-            max-height: 400px;
-        }
-
-        .message {
-            padding: 12px 18px;
-            margin-bottom: 12px;
-            border-radius: 15px;
-            font-size: 18px;
-            line-height: 1.5;
-            animation: slideIn 0.4s ease;
-            word-wrap: break-word;
-        }
-
-        .message.normal {
-            background: white;
-            color: #333;
-            border-left: 4px solid #667eea;
-        }
-
-        .message.emergency {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            font-weight: 700;
-            font-size: 22px;
-            border-left: 6px solid #ff0000;
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-            animation: emergencyPulse 1s infinite, slideIn 0.4s ease;
-        }
-
-        .message.emergency::before {
-            content: '⚠️ ';
-            font-size: 28px;
-            margin-right: 8px;
-        }
-
-        .clear-btn {
-            margin-top: 15px;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .clear-btn:active {
-            transform: scale(0.95);
-        }
-
-        .error-message {
-            background: #ffe0e0;
-            color: #d32f2f;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            text-align: center;
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 8px 30px rgba(245, 87, 108, 0.4), 0 0 0 0 rgba(245, 87, 108, 0.7);
-            }
-            50% {
-                box-shadow: 0 8px 30px rgba(245, 87, 108, 0.4), 0 0 0 20px rgba(245, 87, 108, 0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes emergencyPulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .info-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 15px;
-            color: white;
-            text-align: center;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 20px;
-            }
-            
-            .mic-button {
-                width: 100px;
-                height: 100px;
-                font-size: 40px;
-            }
-            
-            .message {
-                font-size: 16px;
-            }
-            
-            .message.emergency {
-                font-size: 20px;
-            }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Есту Көмекшісі - Дауысты Мәтінге Айналдырғыш</title>
+    <meta name="description" content="Есту нашар адамдарға арналған қосымша. Дауысты мәтінге айналдырады.">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="header">
-        <h1>🎤 Есту Көмекшісі / Помощник Слуха</h1>
+    <!-- Заголовок -->
+    <header class="header">
+        <div class="header-content">
+            <h1>🎤 Есту Көмекшісі</h1>
+            <p class="subtitle">Дауысты Мәтінге Айналдырғыш</p>
+        </div>
+        
+        <!-- Тіл таңдау -->
         <div class="lang-switch">
-            <button class="lang-btn active" data-lang="kk-KZ">🇰🇿 Қазақша</button>
-            <button class="lang-btn" data-lang="ru-RU">🇷🇺 Русский</button>
+            <button class="lang-btn active" data-lang="kk-KZ" aria-label="Қазақша">
+                🇰🇿 Қазақша
+            </button>
+            <button class="lang-btn" data-lang="ru-RU" aria-label="Русский">
+                🇷🇺 Русский
+            </button>
         </div>
-    </div>
+    </header>
 
-    <div class="container">
-        <div class="control-panel">
-            <button class="mic-button" id="micBtn">🎤</button>
-            <div class="status" id="status">Микрофонды басыңыз</div>
+    <!-- Негізгі контент -->
+    <main class="container">
+        <!-- Басқару панелі -->
+        <section class="control-panel">
+            <div class="mic-container">
+                <button class="mic-button" id="micBtn" aria-label="Микрофон">
+                    <span class="mic-icon">🎤</span>
+                </button>
+                <div class="mic-waves"></div>
+            </div>
+            
+            <div class="status-container">
+                <div class="status" id="status">Микрофонды басыңыз</div>
+                <div class="status-indicator" id="statusIndicator"></div>
+            </div>
+            
+            <!-- Рұқсат сұрау -->
+            <div id="permissionBox"></div>
+            
+            <!-- Қате хабарламалары -->
             <div id="errorMsg"></div>
-        </div>
+        </section>
 
-        <div class="transcript-container">
-            <div class="transcript-title">📝 Мәтін / Текст</div>
-            <div class="transcript" id="transcript"></div>
-            <button class="clear-btn" id="clearBtn">🗑️ Тазалау / Очистить</button>
-        </div>
+        <!-- Мәтін көрсету -->
+        <section class="transcript-container">
+            <div class="transcript-header">
+                <h2 class="transcript-title">📝 Танылған мәтін</h2>
+                <div class="transcript-info">
+                    <span id="wordCount">0 сөз</span>
+                </div>
+            </div>
+            
+            <div class="transcript" id="transcript">
+                <div class="message welcome">
+                    <span class="message-icon">👋</span>
+                    <span class="message-text">Микрофонды басып, сөйлеңіз...</span>
+                </div>
+            </div>
+            
+            <div class="transcript-actions">
+                <button class="action-btn clear-btn" id="clearBtn">
+                    <span>🗑️</span> Тазалау
+                </button>
+                <button class="action-btn copy-btn" id="copyBtn">
+                    <span>📋</span> Көшіру
+                </button>
+            </div>
+        </section>
 
-        <div class="info-box">
-            ⚠️ Төтенше сөздер: өрт, пожар, қауіп, опасность, көмек, помощь, жедел жәрдем, скорая помощь
-        </div>
-    </div>
+        <!-- Ақпарат блоктары -->
+        <section class="info-section">
+            <div class="info-box emergency-info">
+                <h3>⚠️ Төтенше сөздер</h3>
+                <div class="emergency-words">
+                    <span class="word-badge">өрт</span>
+                    <span class="word-badge">пожар</span>
+                    <span class="word-badge">қауіп</span>
+                    <span class="word-badge">опасность</span>
+                    <span class="word-badge">көмек</span>
+                    <span class="word-badge">помощь</span>
+                    <span class="word-badge">жедел жәрдем</span>
+                    <span class="word-badge">скорая помощь</span>
+                </div>
+            </div>
 
-    <script>
-        const micBtn = document.getElementById('micBtn');
-        const status = document.getElementById('status');
-        const transcript = document.getElementById('transcript');
-        const clearBtn = document.getElementById('clearBtn');
-        const errorMsg = document.getElementById('errorMsg');
-        const langBtns = document.querySelectorAll('.lang-btn');
+            <div class="info-box instructions">
+                <h3>📱 Қалай пайдалану керек</h3>
+                <ol class="instruction-list">
+                    <li>
+                        <span class="step-number">1</span>
+                        <span class="step-text">Жасыл микрофон батырмасын басыңыз</span>
+                    </li>
+                    <li>
+                        <span class="step-number">2</span>
+                        <span class="step-text">Safari "Рұқсат ету" сұрағанда ✅ басыңыз</span>
+                    </li>
+                    <li>
+                        <span class="step-number">3</span>
+                        <span class="step-text">Микрофон қызыл болғанда - сөйлеңіз</span>
+                    </li>
+                    <li>
+                        <span class="step-number">4</span>
+                        <span class="step-text">Мәтін экранда пайда болады</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+    </main>
 
-        let recognition;
-        let isListening = false;
-        let currentLang = 'kk-KZ';
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Есту нашар адамдарға арналған ❤️</p>
+        <p class="footer-note">HTTPS қосылым қажет • Интернет керек</p>
+    </footer>
 
-        const emergencyWords = {
-            'kk-KZ': ['өрт', 'қауіп', 'көмек', 'жедел жәрдем', 'апат', 'қауіпті', 'қасірет'],
-            'ru-RU': ['пожар', 'огонь', 'опасность', 'помощь', 'помогите', 'скорая', 'авария', 'беда']
-        };
-
-        const statusTexts = {
-            'kk-KZ': {
-                ready: 'Микрофонды басыңыз',
-                listening: '🔴 Тыңдап жатыр...',
-                stopped: 'Тоқтатылды',
-                error: 'Қате пайда болды'
-            },
-            'ru-RU': {
-                ready: 'Нажмите микрофон',
-                listening: '🔴 Слушаю...',
-                stopped: 'Остановлено',
-                error: 'Произошла ошибка'
-            }
-        };
-
-        function initSpeechRecognition() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = currentLang;
-
-                recognition.onresult = (event) => {
-                    let finalTranscript = '';
-                    let interimTranscript = '';
-
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcriptPart = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcriptPart;
-                        } else {
-                            interimTranscript += transcriptPart;
-                        }
-                    }
-
-                    if (finalTranscript) {
-                        addMessage(finalTranscript);
-                    }
-                };
-
-                recognition.onerror = (event) => {
-                    console.error('Recognition error:', event.error);
-                    if (event.error === 'not-allowed') {
-                        showError('Микрофонға рұқсат берілмеді / Нет доступа к микрофону');
-                    } else {
-                        showError(statusTexts[currentLang].error);
-                    }
-                    stopListening();
-                };
-
-                recognition.onend = () => {
-                    if (isListening) {
-                        recognition.start();
-                    }
-                };
-            } else {
-                showError('Браузер дауысты тану функциясын қолдамайды / Браузер не поддерживает распознавание речи');
-            }
-        }
-
-        function isEmergency(text) {
-            const lowerText = text.toLowerCase();
-            const words = emergencyWords[currentLang];
-            return words.some(word => lowerText.includes(word.toLowerCase()));
-        }
-
-        function addMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = isEmergency(text) ? 'message emergency' : 'message normal';
-            messageDiv.textContent = text;
-            transcript.appendChild(messageDiv);
-            transcript.scrollTop = transcript.scrollHeight;
-
-            if (isEmergency(text)) {
-                navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 200]);
-            }
-        }
-
-        function startListening() {
-            if (recognition) {
-                isListening = true;
-                recognition.start();
-                micBtn.classList.add('listening');
-                status.textContent = statusTexts[currentLang].listening;
-                errorMsg.innerHTML = '';
-            }
-        }
-
-        function stopListening() {
-            isListening = false;
-            if (recognition) {
-                recognition.stop();
-            }
-            micBtn.classList.remove('listening');
-            status.textContent = statusTexts[currentLang].ready;
-        }
-
-        function showError(message) {
-            errorMsg.innerHTML = `<div class="error-message">${message}</div>`;
-        }
-
-        micBtn.addEventListener('click', () => {
-            if (isListening) {
-                stopListening();
-            } else {
-                startListening();
-            }
-        });
-
-        clearBtn.addEventListener('click', () => {
-            transcript.innerHTML = '';
-        });
-
-        langBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const wasListening = isListening;
-                if (wasListening) {
-                    stopListening();
-                }
-
-                langBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentLang = btn.dataset.lang;
-
-                if (recognition) {
-                    recognition.lang = currentLang;
-                }
-
-                status.textContent = statusTexts[currentLang].ready;
-
-                if (wasListening) {
-                    setTimeout(startListening, 300);
-                }
-            });
-        });
-
-        initSpeechRecognition();
-    </script>
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
